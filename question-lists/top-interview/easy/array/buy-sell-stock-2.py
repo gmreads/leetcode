@@ -11,30 +11,17 @@ https://leetcode.com/explore/featured/card/top-interview-questions-easy/92/array
 class Solution:
     def maxProfit(self, prices: List[int]) -> int:
         """
-        Buy low, sell high
+         Check price every day, sell if previous day was lower.
+         Profit(peak - valley) == Sum(profit(sell everyday if price was lower yestreday))
+         Example: If a[5] is peak, a[2] is valley
+         a[5] - a[2] == a[3] - a[2] + a[4] - a[3] + a[5] - a[4]
+         RHS = a[3] - a[3] + a[4] - a[4] + a[5] - a[2] == LHS
+         
         """
-        dir = None
         total_profit = 0
-        min_price = float("inf")
-        max_profit = 0
-        prices.append(-1)
-        for i in range(len(prices) - 1):
-            min_price = min(min_price, prices[i])
-            max_profit = max(max_profit, prices[i] - min_price)
-            if prices[i + 1] < prices[i]:
-                if not dir:
-                    dir = "decreasing"
-                if dir == "increasing":
-                    # Dip found
-                    total_profit += max_profit
-                    max_profit = 0
-                    min_price = float("inf")
-                    dir = "decreasing"
-            if prices[i + 1] > prices[i]:
-                if not dir:
-                    dir = "increasing"
-                if dir == "decreasing":
-                    dir = "increasing"
+        for i in range(1, len(prices)):
+            if prices[i] > prices[i-1]:
+                total_profit += prices[i] - prices[i-1]
         return total_profit
 
 if __name__ == "__main__":
